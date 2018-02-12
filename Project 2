@@ -1,0 +1,36 @@
+/*
+Copies stdin to stdout. Each line is numbered, left-justified,
+and the original input is left justified.
+*/
+
+/*
+1. Have a loop to get the input and ouput it with the modifications.
+2.Can use string.
+3. So what we can do is A. read standard in and write it to stdout. or B. 
+Read all of standard in completely, then output it as a modification. 
+So I need to actually read all of standard in. 
+*/
+
+#include <stdio.h>
+
+int main(void)
+{
+  int row = 1;
+  int currCharInt = 0;
+  char currChar = '\0';
+  //we are getting a set of chars, so a string, until we find a new line.
+  //Ctrl-D <=> EOF
+  while((currCharInt = getchar()) != EOF)
+  {
+    if((currChar == '\n") || (row == 1))
+    {
+      printf("%d\t", row);
+      row++;
+    }
+    currChar = itoa(currCharInt);
+    while(currChar != '\n')
+    {
+      printf("%c", currChar)
+    }
+  }
+}
