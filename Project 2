@@ -9,12 +9,63 @@ and the original input is left justified.
 3. So what we can do is A. read standard in and write it to stdout. or B. 
 Read all of standard in completely, then output it as a modification. 
 So I need to actually read all of standard in. 
+4. There are two options I can do: A) as stdin != EOF, as the input is happening, it is concurrently being saved and modified <ideal>.
+There would have to be a limit as the system would have to save the entire input, to print it once the input is over.
+B) We use fgets to read line by line, and we modify the lines once we have them and we accumulate the lines, appending them to a 
+principal string. When EOF is finally read, we print the entire principal string. There are 2 limits in this process:
+  1.Each line must be no longer than 4096 chars.
+  2.The principal string must be no longer than 100 lines.
+5. Cannot use fgets, since it doesnt' read the last line that has EOF., check first. 
+  O/W we rely on fgetc? no getc. and check for eof. 
+  
 */
 
 #include <stdio.h>
+#include <string.h>
+
+#define MAX_BUFF 4096
+#define MAX_LINES 99
+
+char * append(char *strOne, char *strTwo);
+char * prependLine(int lineNum, char *myStr, char * output);
 
 int main(void)
 {
+  char buffer[MAX_BUFF] = {'\0'};
+  char *strHolder = '\0';
+  //^^ (!) if not possible, then we have it point to 0, and we just check in the function prepend() if it's a null pointer.
+  
+  char *temp = 0;
+  size_t currLine = 0;
+  
+  
+  ///*str*/char *fgets( char          *str, int count, FILE          *stream );
+  //read from stdin a line at a time. 
+  //(!) The limit in reading lines is 99 so we don't have to count the number of digits in the current line in order to prepend correctly.
+  while(fgets(buffer, MAX_BUFF, stdin) != 0 && (currLine+1 < MAX_LINES)) 
+  {
+        //we read a line, so we increment our counter.
+        ++currLine;
+        //1st we prepend (modify the line read to have the line number and a tab.
+        //2nd we append this newline to our large string that accumulates all the lines.
+        append(strHolder, prependLine(currLine, buffer, temp));
+  }
+  else
+  {
+    //we check if eof encountered. if so, then we still do the same thing as last time,
+    //except we exit this time.
+    currLine++;
+    append(strHolder, prependLine(currLine, buffer));
+    
+  }
+  
+  //then we print the entire stringHolder, char by char
+  unsigned int index;
+  for(index = 0; strHolder[index]; i++)
+    putchar(strHolder[index]);
+  
+  
+  /*
   int row = 1;
   int currCharInt = 0;
   char currChar = '\0';
@@ -32,5 +83,54 @@ int main(void)
     {
       printf("%c", currChar)
     }
+  }  
+  */
+  
+}
+
+//****  first we allocate enough memory for the 
+char * prepend_appendLine(int lineNum, char *myStr, char *output);
+{
+  //0th we make temp point to the same string that it did before. 
+  char * temp = output;
+  
+  //1st we convert the lineNum to a char
+  char num = itoa(lineNum);
+  //we don't check if it's a valid num since we expect it to be correct.
+  //we make output be long enough to hold both inputs.
+  size_t totLength = 2 + strlen(myStr)+1; //+2 for 'num' & '\t', +1 for '\0'.
+  /*
+  While moving length to the front may increase visibility in some rare cases, one should also pay attention that in the general case, 
+  it should be better to write the expression as:
+      int *sieve = malloc(sizeof *sieve * length);
+  Since keeping the sizeof first, in this case, ensures multiplication is done with at least size_t math.
+  */
+  
+  ouput = malloc(sizeof(*output)*totLength);
+  
+  //Option 1
+  if(output)
+  {
+    *output[0] = num; *output[1] = '\t";
+    //now we copy the rest of the things.
+    int i;
+    for(int i = 0; temp[i]; i++)
+      output[i+2] = temp[i];
   }
+  
+  //Option 2
+  /*
+    if(temp)
+    {
+      //prepend and copy.
+      //copy
+     }
+     else
+     {
+      //don't copy?
+     }
+  */
+  if(output)
+    return output; //there was an error
+  return 1;
 }
